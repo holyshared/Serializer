@@ -1,0 +1,26 @@
+name: Serializer
+
+web: "[http://sharedhat.com](http://sharedhat.com)"
+
+description: ""
+
+authors: "[Noritaka Horio](http://sharedhat.com)"
+
+license: "[MIT License](http://holyshared.github.com/Serializer/license.txt)"
+
+copyright: "&copy; [Noritaka Horio](http://sharedhat.com)"
+
+sources:
+  - "Source/Serializer.js"
+
+author: holyshared
+
+category: Interface
+
+tags: [serialize, deserialize, type]
+
+current: 0.1
+
+docs: http://holyshared.github.com/Serializer/docs/
+
+demo: http://holyshared.github.com/Serializer
