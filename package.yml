@@ -1,8 +1,8 @@
-name: Serializer
+name: "Serializer"
 
 web: "[http://sharedhat.com](http://sharedhat.com)"
 
-description: ""
+description: "The object of the defined type is restored from the character string and the character string to the object with Type. "
 
 authors: "[Noritaka Horio](http://sharedhat.com)"
 

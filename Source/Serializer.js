@@ -1,22 +1,70 @@
+/*
+---
+name: Serializer
+
+description: The object of the defined type is restored from the character string and the character string to the object with Type. 
+
+license: MIT-style
+
+authors:
+- Noritaka Horio
+
+requires:
+  - Core/Type
+  - Core/Array
+  - Core/Object
+
+provides:
+  - Serializer
+...
+*/
+
 (function(){
 
     var Serializer = this.Serializer = function(){};
 
-    var container = {
+    var Container = Serializer.Container = {
 
         types: {},
 
         get: function(type){
-            return this.types[type];
+			if (!this.has(type)){
+				return false;
+			}
+			return this.types[type];
         },
 
-        add: function(type, item){
-            this.types[type] = item;
+        register: function(type, item){
+			if (this.has(type)){
+				throw new Error('The specified data type has already been registered.');
+			}
+			this.types[type] = item;
         },
 
-        remove: function(type){
-            delete this.types[type];
+        unregister: function(type){
+			if (!this.has(type)){
+				throw new Error('The specified data type is not registered.');
+			}
+			delete this.types[type];
         },
+
+        has: function(type){
+			if (!this.types[type]){
+				return;
+			}
+			return true;
+        },
+
+		find: function(source){
+			var converter;
+			for (var key in this.types) {
+				converter = this.types[key];
+                if (converter.match(source)) {
+                	return converter;
+                }
+			}
+			return false;
+		},
 
         serialize: function(object){
             var name = typeOf(object);
@@ -26,31 +74,23 @@
         },
 
         deserialize: function(source){
-            var types = this.types;
-            var target = null;
-            var params = null;
-            Object.each(types, function(converter, key){
-                params = converter.match(source);
-                if (params) {
-                    target = converter;
-                    return false;
-                }
-            });
-            if (!target) {
-                throw new Error('not match');
-            }
-            return target.deserialize(params);
-        }
+			var converter, keywords;
+			if (!(converter = this.find(source))){
+				throw new Error('not match');
+			}
+			keywords = converter.compile(source);
 
+			return converter.deserialize(keywords);
+        }
     };
 
     Serializer.implement({
         serialize: function(object){
-            return container.serialize(object);
+            return Container.serialize(object);
         },
 
         deserialize: function(source){
-            return container.deserialize(source);
+            return Container.deserialize(source);
         }
     });
 
@@ -59,53 +99,67 @@
         register: function(type, converter){
             var key = typeOf(type.prototype);
             var converter = new Serializer.Converter(converter);
-            container.add(key, converter);
+            Container.register(key, converter);
         },
 
         unregister: function(type){
             var key = typeOf(type.prototype);
-            container.remove(key);
+            Container.unregister(key);
         }
 
     });
 
-    var Converter = Serializer.Converter = function(converter){
-        Object.each(converter, function(method, key){
-            this[key] = method;
-        }, this);
-    };
 
+	var Converter = Serializer.Converter = function(converter){
+		Object.append(this, converter || {});
+    };
 
     Converter.implement({
 
-        _getRegExp: function(){
+		_expression: null,
+
+    	_compileExpression: function(){
             var paturn = this.paturn;
             Object.each(this.params, function(token, keyword){
                 paturn = paturn.replace(':' + keyword, '(\\' + token + ')');
             });
             paturn = paturn.replace('\:', ':');
 
-            return new RegExp(paturn, 'i');
+			this._expression = new RegExp(paturn, 'i');
+
+            return this._expression;
         },
 
-        match: function(source){
-            var re = this._getRegExp();
-            var map = null;
+        _parse: function(source){
+			var attribs, result;
 
-            if (!re.test(source)){
-                return;
+            attribs = source.match(this._compileExpression());
+			if (attribs == false) {
+				return;
+			}
+			attribs.shift();
+
+			return attribs;
+		},
+
+		match: function(source){
+			var expression = this._compileExpression();
+
+            if (!expression.test(source)){
+				return;
             }
+			return true;
+		},
 
-            var params = source.match(re);
-            var target = params.shift();
+        compile: function(source){
+        	var result = this._parse(source);
 
-            var keys = Object.keys(this.params);
             try {
-                map = params.associate(keys);
+                hash = result.associate(Object.keys(this.params));
             } catch(exp) {
-                throw new Error('');
+                throw new Error('It failed in the compilation of the restoration pattern of deserialize.');
             }
-            return map;
+            return hash;
         }
 
     });
