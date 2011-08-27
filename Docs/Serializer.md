@@ -5,24 +5,26 @@ Serializer.js
 Class: Serializer
 ----------------------------------------------------------
 
-Serializer.register(User, {
+### Example
 
-    paturn: ':name\::email',
-
-    params: {
-        name: '\w+',
-        email: '\w+'
-    },
-
-    serialize: function(object) {
-        return [object.name, ':', object.email].join('');
-    },
-
-    deserialize: function(params) {
-        return new User(params.name, params.email);
-    }
-
-});
+	Serializer.register(User, {
+	
+	    paturn: ':name\::email',
+	
+	    params: {
+	        name: '\w+',
+	        email: '\w+'
+	    },
+	
+	    serialize: function(object) {
+	        return [object.name, ':', object.email].join('');
+	    },
+	
+	    deserialize: function(params) {
+	        return new User(params.name, params.email);
+	    }
+	
+	});
 
 ### Methods
 
