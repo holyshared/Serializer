@@ -1,0 +1,84 @@
+@charset "utf-8";
+
+body {
+	font-family: Sylfaen, "Times New Roman", serif;
+}
+
+header, footer, section, label {
+	display: block;
+}
+
+header {
+	margin-top: 20px;
+	margin-bottom: 30px;
+}
+
+label {
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+input, textarea {
+	border: 1px solid #cccccc;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	padding: 5px;
+}
+
+h1 {
+	font-size: 263%;
+}
+
+h2 {
+	font-size: 196%;
+	margin-bottom: 10px;
+}
+
+p, ul, ol, dt, dd {
+	font-size: 108%;
+	line-height: 160%;
+}
+
+p, ul, ol {
+	margin-bottom: 15px;
+}
+
+footer {
+	text-align: right;
+}
+
+
+.page {
+	width: 960px;
+	margin: 0px auto;
+}
+
+.container {
+	overflow: hidden;
+}
+
+.container section {
+	border: 1px solid #cccccc;
+	padding: 15px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	width: 430px;
+}
+
+.container .serialize {
+	float: left;
+}
+
+.container .deserialize {
+	float: right;
+}
+
+.field {
+	margin-bottom: 10px;
+}
+
+.readyonly {
+	background-color: #eeeeee;
+}
