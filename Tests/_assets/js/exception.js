@@ -14,7 +14,7 @@ new Type('unregister', Unregister);
 
 Serializer.register(User, {
 
-    paturn: ':name\::email',
+    paturn: '{name}:{email}',
 
     params: {
         name: '\w+',
@@ -22,7 +22,10 @@ Serializer.register(User, {
     },
 
     serialize: function(object) {
-        return [object.getName(), ':', object.getEmail()].join('');
+        return this.assemble({
+	        name: object.getName(),
+	        email: object.getEmail()
+        });
     },
 
     deserialize: function(params) {
@@ -30,19 +33,6 @@ Serializer.register(User, {
     }
 
 });
-
-/*
-function addMessage(text){
-    var container = doc.getElementById('messages');
-
-    var message = doc.createElement('p');
-    var messageText = doc.createTextNode(text);
-
-    message.appendChild(messageText);
-    container.appendChild(message);
-}
-*/
-
 
 win.addEventListener('load', function(){
 

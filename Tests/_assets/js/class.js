@@ -1,8 +1,8 @@
 (function(win, doc){
 
-var User = new Class({
+var User = this.User = new Class({
 
-    initialize: function(){
+    initialize: function(name, email){
         this.name = name;
         this.email = email;
     },

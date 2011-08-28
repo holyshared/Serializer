@@ -2,15 +2,18 @@
 
 Serializer.register(User, {
 
-    paturn: ':name\::email',
+    paturn: '{name}:{email}',
 
     params: {
-        name: '\w+',
-        email: '\w+'
+        name: '\\w+',
+        email: '\\w+'
     },
 
     serialize: function(object) {
-        return [object.getName(), ':', object.getEmail()].join('');
+        return this.assemble({
+	        name: object.getName(),
+	        email: object.getEmail()
+        });
     },
 
     deserialize: function(params) {
@@ -28,7 +31,6 @@ win.addEventListener('load', function(){
     var source = serializer.serialize(myUser);
 
 	addMessage(source);
-
 
     //deserialize
     var user = serializer.deserialize(source);

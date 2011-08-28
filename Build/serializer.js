@@ -11,6 +11,7 @@ authors:
 
 requires:
   - Core/Type
+  - Core/String
   - Core/Array
   - Core/Object
 
@@ -76,7 +77,7 @@ provides:
 		deserialize: function(source){
 			var converter, keywords;
 			if (!(converter = this.find(source))){
-				throw new Error('not match');
+				throw new Error('It is not possible to convert it into the object.');
 			}
 			keywords = converter.compile(source);
 
@@ -122,10 +123,11 @@ provides:
 
 		_compileExpression: function(){
 			var paturn = this.paturn;
+			paturn = paturn.replace(/([\.\*\+\?\^\$\|\(\)\[\]]+)/i, '\\$1');
 			Object.each(this.params, function(token, keyword){
-				paturn = paturn.replace(':' + keyword, '(\\' + token + ')');
+				paturn = paturn.replace('{' + keyword + '}', '(' + token + ')');
 			});
-			paturn = paturn.replace('\:', ':');
+			paturn = paturn.replace(/([\{\}]+)/i, '\\$1');
 
 			this._expression = new RegExp(paturn, 'i');
 
@@ -144,9 +146,12 @@ provides:
 			return attribs;
 		},
 
+		assemble: function(params){
+			return this.paturn.substitute(params);
+		},
+
 		match: function(source){
 			var expression = this._compileExpression();
-
 			if (!expression.test(source)){
 				return;
 			}
@@ -155,7 +160,6 @@ provides:
 
 		compile: function(source){
 			var result = this._parse(source);
-
 			try {
 				hash = result.associate(Object.keys(this.params));
 			} catch(exp) {
