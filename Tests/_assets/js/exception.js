@@ -17,8 +17,8 @@ Serializer.register(User, {
     paturn: '{name}:{email}',
 
     params: {
-        name: '\w+',
-        email: '\w+'
+        name: '\\w+',
+        email: '\\w+'
     },
 
     serialize: function(object) {
@@ -38,10 +38,10 @@ win.addEventListener('load', function(){
 
 	try {
 		Serializer.register(User, {
-		    paturn: ':name\::email',
+		    paturn: '{name}:{email}',
 		    params: {
-		        name: '\w+',
-		        email: '\w+'
+		        name: '\\w+',
+		        email: '\\w+'
 		    },
 		    serialize: function(object){},
 		    deserialize: function(params){}
