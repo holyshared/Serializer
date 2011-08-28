@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title></title>
+		<meta name="description" content="" />
+		<meta name="author" content="Noritaka Horio" />
+		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+		<script type="text/javascript" src="js/lib/mootools.js"></script>
+		<script type="text/javascript" src="js/lib/serializer-compressed.js"></script>
+		<script type="text/javascript" src="js/runner.js"></script>
+	</head>
+	<body>
+		<article class="page">
+			<header>
+		    	<h1>Serializer</h1>
+		    </header>
+
+			<section>
+				<h2>Serialize</h2>
+				<p id="serializeSource">serialize source.</p>
+				<form action="/" method="post">
+					 <fieldset>
+						<div class="field">
+							<label><input id="serializeTitle" type="text" name="title" value="" /></label>							
+						</div>
+						<div class="field">
+							<label><textarea id="serializeContent" cols="10" rows="5" name="content"></textarea></label>							
+						</div>
+					 </fieldset>
+				</form>
+				<p><button id="serialize" type="button">serialize</button></p>
+			</section>
+
+			<section>
+				<h2>Deserialize</h2>
+				<p><input type="text" name="deserializeSource" value="" /></p>
+				<form action="/" method="post">
+					 <fieldset>
+						<div class="field">
+							<label><input id="deserializeTitle" type="text" name="title" value="" /></label>							
+						</div>
+						<div class="field">
+							<label><textarea id="deserializeContent" cols="10" rows="5" name="content"></textarea></label>							
+						</div>
+					 </fieldset>
+				</form>
+				<p><button id="deserialize" type="button">deserialize</button></p>
+			</section>
+
+		    <footer>
+				<p>Copyright 2011 Noritaka Horio all rights reserved.</p>
+		    </footer>
+		</article>
+	</body>
+</html>
