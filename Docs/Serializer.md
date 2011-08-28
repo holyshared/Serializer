@@ -5,19 +5,21 @@ Serializer.js
 Class: Serializer
 ----------------------------------------------------------
 
-### Example
-
+	//Registration of type
 	Serializer.register(User, {
 	
-	    paturn: ':name\::email',
+	    paturn: '{name}:{email}',
 	
 	    params: {
-	        name: '\w+',
-	        email: '\w+'
+	        name: '\\w+',
+	        email: '\\w+'
 	    },
 	
 	    serialize: function(object) {
-	        return [object.name, ':', object.email].join('');
+			return this.assemble({
+		        name: object.getName(),
+		        email: object.getEmail()
+	        });
 	    },
 	
 	    deserialize: function(params) {
@@ -25,6 +27,12 @@ Class: Serializer
 	    }
 	
 	});
+
+	//From the object to the character string
+	var myUser = new User('holyshared', 'email');
+
+    var serializer = new Serializer();
+	var source = serializer.serialize(myUser); //holyshared:email
 
 ### Methods
 

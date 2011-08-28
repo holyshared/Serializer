@@ -39,15 +39,18 @@ The restoration from the character string uses and restores the regular expressi
 	//Register user
 	Serializer.register(User, {
 	
-		paturn: ':name=:email', //It is :name and :email placeholder.
+		paturn: '{name}={email}', //It is {name} and {email} placeholder.
 	
 		params: {
-			name: '\w+',
-			email: '\w+'
+			name: '\\w+',
+			email: '\\w+'
 		},
 
 		serialize: function(object){
-			return object.name + '=' + object.email;
+			return this.assemble({
+		        name: object.name,
+		        email: object.email
+	        });
 		},
 	
 		deserialize: function(params){
