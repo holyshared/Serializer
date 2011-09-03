@@ -15,7 +15,7 @@ sources:
 
 author: holyshared
 
-category: Interface
+category: Utilities
 
 tags: [serialize, deserialize, type]
 
