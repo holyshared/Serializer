@@ -2,7 +2,7 @@
 Serializer
 ====================================
 
-![Screenshot](http://holyshared.github.com/Serializer/serializer.jpg)
+![Serializer](http://holyshared.github.com/Serializer/seralizer.jpg)
 
 The object of the defined type is restored from the character string and the character string to the object with Type.  
 
