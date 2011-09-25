@@ -97,6 +97,33 @@ provides:
 
 	Object.append(Serializer, {
 
+		_variableStart: '{',
+		_variableEnd: '}',
+
+		setVariableRule: function(rule){
+			if (!rule.start || !rule.end){
+				throw new TypeError('Option specification is not carried out.');
+			}
+			this._variableStart = this._validateRule(rule.start);
+			this._variableEnd = this._validateRule(rule.end);
+			return this;
+		},
+
+		getVariableRule: function(){
+			var rule = {
+				start: this._variableStart,
+				end: this._variableEnd
+			};
+			return rule;
+		},
+
+		_validateRule: function(bracket){
+			if (!Type.isString(bracket)){
+				throw new TypeError('It is invalid variable rule');
+			}
+			return bracket;
+		},
+
 		register: function(type, converter){
 			var key = typeOf(type.prototype);
 			var converter = new Serializer.Converter(converter);
@@ -113,31 +140,68 @@ provides:
 	});
 
 
+	var Variable = Serializer.Variable = {
+
+		parsePaturn: function(paturn, params){
+
+			var variables = {};
+			Object.each(params, function(token, keyword){
+				variables[keyword] = '(' + token + ')';
+			});
+
+			var expression = Variable.variablePaturn();
+
+			paturn = paturn.replace(expression, function(match, key){
+				if (match.charAt(0) == '\\') {
+					return match.slice(1).escapeRegExp();
+				} else {
+					return variables[key];
+				}
+			});
+
+			return new RegExp(paturn, 'i');
+		},
+
+		variablePaturn: function(){
+			var rule = Serializer.getVariableRule();
+			var start = rule.start.escapeRegExp(), end = rule.end.escapeRegExp();
+			var paturn = '\\\\?' + start + '([^' + start + end + ']+)' + end;
+			var re = new RegExp(paturn, 'g');
+			return re;
+		}
+	};
+
 	var Converter = Serializer.Converter = function(converter){
 		Object.append(this, converter || {});
 	};
 
 	Converter.implement({
 
-		_expression: null,
+		_compiledParser: null,
+		_compiledVariable: null,
 
-		_compileExpression: function(){
-			var paturn = this.paturn;
-			paturn = paturn.replace(/([\.\*\+\?\^\$\|\(\)\[\]]+)/i, '\\$1');
-			Object.each(this.params, function(token, keyword){
-				paturn = paturn.replace('{' + keyword + '}', '(' + token + ')');
-			});
-			paturn = paturn.replace(/([\{\}]+)/i, '\\$1');
+		_compileParser: function(){
+			if (this._compiledParser){
+				return this._compiledParser;
+			}
+			this._compiledParser = Variable.parsePaturn(this.paturn, this.params);
+			return this._compiledParser;
+		},
 
-			this._expression = new RegExp(paturn, 'i');
-
-			return this._expression;
+		_compileVariable: function(){
+			if (this._compiledVariable){
+				return this._compiledVariable;
+			}
+			this._compiledVariable = Variable.variablePaturn();
+			return this._compiledVariable;
 		},
 
 		_parse: function(source){
 			var attribs, result;
+			var expression = this._compileParser();
 
-			attribs = source.match(this._compileExpression());
+			attribs = source.match(expression);
+
 			if (attribs == false) {
 				return;
 			}
@@ -147,11 +211,18 @@ provides:
 		},
 
 		assemble: function(params){
-			return this.paturn.substitute(params);
+			var expression = this._compileVariable();
+			var paturn = this.paturn.replace(expression, function(match, key){
+				return params[key];
+			});
+			paturn = paturn.replace(/\\?/g, '');
+
+			return paturn;
 		},
 
 		match: function(source){
-			var expression = this._compileExpression();
+			var expression = this._compileParser();
+
 			if (!expression.test(source)){
 				return;
 			}
