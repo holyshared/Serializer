@@ -143,28 +143,33 @@ provides:
 	var Variable = Serializer.Variable = {
 
 		parsePaturn: function(paturn, params){
-			var variables = {};
 
+			var variables = {};
 			Object.each(params, function(token, keyword){
 				variables[keyword] = '(' + token + ')';
 			});
 
 			var expression = Variable.variablePaturn();
-			paturn = paturn.substitute(variables, expression);
 
-			return new RegExp(paturn);
+			paturn = paturn.replace(expression, function(match, key){
+				if (match.charAt(0) == '\\') {
+					return match.slice(1).escapeRegExp();
+				} else {
+					return variables[key];
+				}
+			});
+
+			return new RegExp(paturn, 'i');
 		},
 
 		variablePaturn: function(){
 			var rule = Serializer.getVariableRule();
-			var start = rule.start, end = rule.end;
-			var paturn = '\\\\?\\' + start + '([^' + start + end + ']+)\\' + end;
+			var start = rule.start.escapeRegExp(), end = rule.end.escapeRegExp();
+			var paturn = '\\\\?' + start + '([^' + start + end + ']+)' + end;
 			var re = new RegExp(paturn, 'g');
 			return re;
 		}
-		
 	};
-
 
 	var Converter = Serializer.Converter = function(converter){
 		Object.append(this, converter || {});
