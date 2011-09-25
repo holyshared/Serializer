@@ -212,7 +212,12 @@ provides:
 
 		assemble: function(params){
 			var expression = this._compileVariable();
-			return this.paturn.substitute(params, expression);
+			var paturn = this.paturn.replace(expression, function(match, key){
+				return params[key];
+			});
+			paturn = paturn.replace(/\\?/g, '');
+
+			return paturn;
 		},
 
 		match: function(source){

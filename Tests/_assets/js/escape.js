@@ -4,7 +4,7 @@ Serializer.setVariableRule({ start: '{[', end: ']}' });
 
 Serializer.register(User, {
 
-    paturn: '\\{[name]}={[name]}:\\{[email]}={[email]}',
+    paturn: '\\{\\[name\\]\\}={[name]}\\|\\{\\[email\\]\\}={[email]}',
 
     params: {
         name: '\\w+',
@@ -37,7 +37,7 @@ win.addEventListener('load', function(){
     //deserialize
     var user = serializer.deserialize(source);
 
-	addMessage('{[name]}=' + user.name + ':{[email]}=' + user.email);
+	addMessage('{[name]}=' + user.name + '|{[email]}=' + user.email);
 
 });
 
