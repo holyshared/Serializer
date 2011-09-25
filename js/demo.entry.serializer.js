@@ -2,7 +2,7 @@
 
 Serializer.register(Entry, {
 
-	paturn: 'entry={title}|{content}',
+	paturn: 'entry={title}\\|{content}',
 
 	params: {
 		title: '.*',
